@@ -14,11 +14,25 @@
         :__methods__ {
            :class :__class_symbol__
            :shift (fn [this xinc yinc]
-                    (a Point (+ (:x this) xinc)
-                             (+ (:y this) yinc)
+                    (a Point (+ (send-to this :x) xinc)
+                             (+ (send-to this :y) yinc)
+                    )
+                )
+           :x :x
+           :y :y
+           :add (fn [this this2]
+                    (send-to this :shift 
+                        (send-to this2 :x)
+                        (send-to this2 :y)
                     )
                 )
             }
         }
     )
 )
+
+(def my-point (a Point 1 2))
+(prn (send-to my-point :x))
+(prn (send-to my-point :y))
+(prn (send-to my-point :shift -1 -100))
+(prn (send-to my-point :add (a Point -1 -100)))
