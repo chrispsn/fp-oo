@@ -1,8 +1,8 @@
 ; TODO why do we need to use double brackets?
-; Note: according to Brian's answers, you *do* need to use a 'fn' 
+; Note: according to Brian's answers, you *should* use a 'fn' 
 ; in the last step which doesn't pass to anything.
-; I think the reason is because you want to make explicit that
-; that function able to be wrapped around.
+; I think the reason is because you want to expose that there's 
+; a continuation which exists at that step, which can be wrapped around.
 
 ; Exercise 1
 (println 
