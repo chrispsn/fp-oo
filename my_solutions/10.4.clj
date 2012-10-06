@@ -46,5 +46,74 @@
 ; answer: clojure was interpreting x as a function,
 ; since it was the first (only) item in the list.
 
+; Exercise 8
+(def check-sum 
+    (fn [digits] 
+        (apply + (map * 
+            (range 1 (+ (count digits) 1))
+            digits
+        ))
+    )
+)
+(println (check-sum [4 8 9 3 2]))
 
-; keep going from Exercise 8.
+; Exercise 9
+; source from higher-order-functions.clj
+(use '[clojure.string :only [split]])
+(def reversed-digits
+     (fn [string]
+       (reverse
+        (map (fn [digit-string] (Integer/parseInt digit-string))
+             (rest (split string #""))))))
+
+; my solution
+(def isbn? (fn [string] (= 0 (rem (check-sum (reversed-digits string)) 11))))
+(println (map isbn? ["0131774115" "0977716614" "1934356190"]))
+
+; Exercise 10
+
+(def check-sum 
+    (fn [digits] 
+        (apply + 
+            (map * 
+                (map (fn [x] (if (odd? x) 1 3)) 
+                    (range 1 (+ (count digits) 1))
+                )
+            digits)
+        )
+    )
+)
+(println (check-sum [4 8 9 3 2]))
+
+(def upc? 
+    (fn [string] 
+        (= 0 (rem (check-sum (reversed-digits string)) 10))
+    )
+)
+(println (map upc? ["074182265830" "731124100023" "722252601404"]))
+
+
+; Exercise 11
+
+(def check-sum (fn [transform-fn] 
+    (fn [digits] 
+        (apply + 
+            (map * 
+                (map transform-fn
+                    (range 1 (+ (count digits) 1))
+                )
+            digits)
+        )
+    )
+))
+
+(def number-checker (fn [base check-sum] 
+    (fn [string] 
+        (= 0 (rem (check-sum (reversed-digits string)) base))
+    )
+))
+
+(def isbn? (number-checker 11 (check-sum (fn [x] x))))
+(def upc? (number-checker 10 (check-sum (fn [x] (if (odd? x) 1 3)))))
+(println (map isbn? ["0131774115" "0977716614" "1934356190"]))
+(println (map upc? ["074182265830" "731124100023" "722252601404"]))
