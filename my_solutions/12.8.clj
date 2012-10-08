@@ -282,6 +282,7 @@
 
 
 ; Exercise 8
+; oh god this is horrible
 
 (def transform (fn [zipper]
     (cond (zip/end? zipper)
@@ -298,11 +299,24 @@
             transform
           )
 
+          ; Fake functions
           (= (zip/node zipper) 'provided)
           (->   
             zipper
+            ; We want to append this entire fake defn 
+            ; node into the prev node
+            zip/up
+            zip/left
+            (zip/append-child (-> zipper zip/up zip/node))
+            ; Replace provided with fake
+            zip/down
+            zip/rightmost
+            zip/down
             (zip/replace 'fake)
-            skip-to-rightmost-leaf
+            ; Now: get out and nuke the old fake function node
+            zip/rightmost
+            zip/next
+            zip/remove
             zip/next
             transform
           )
