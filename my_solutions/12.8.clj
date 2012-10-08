@@ -209,4 +209,162 @@
 )
 
 
-; continue from exercise 7
+; Exercise 7
+; I dunno. It works, but it feels kinda hacky.
+(def transform (fn [zipper]
+    (cond (zip/end? zipper)
+          zipper
+
+          (or (= (zip/node zipper) 'facts) (= (zip/node zipper) 'fact))
+          (-> zipper (zip/replace 'do) zip/next transform)
+          
+          (= (zip/node zipper) 'quote)
+          (->   
+            zipper
+            skip-to-rightmost-leaf
+            zip/next
+            transform
+          )
+
+          (= (zip/node zipper) '=>)
+          ; note: could define the replacement node here as in Brian's soln
+          (-> 
+            zipper
+
+            ; Get rid of left node
+            zip/left
+            zip/remove
+            zip/next ; Because remove goes to the previous node,
+                     ; we get back to the main one by using next
+
+            ; Get rid of right node
+            zip/right
+            zip/remove
+
+            ; Put in our new branch
+            (zip/replace '(=>))
+            (zip/insert-child (-> zipper zip/left zip/node))
+            (zip/insert-child 'expect)
+            (zip/append-child (-> zipper zip/right zip/node))
+
+            ; Move on
+            zip/down
+            skip-to-rightmost-leaf
+            zip/next
+            transform
+          )
+
+          :else
+          (-> zipper zip/next transform)
+    )
+))
+
+(def transform-pipeline
+    (fn [form]
+        (-> form zip/seq-zip transform zip/root)
+    )
+)
+
+(def test-form 
+    '(fact
+        (first '((+ 1 2) => 3))
+        => '(+ 1 2)
+    )
+)
+(println (transform-pipeline test-form))
+
+(def test-form 
+    '(facts 
+        (+ 1 2) => 3 
+        3 => odd?)
+)
+(println (transform-pipeline test-form))
+
+
+; Exercise 8
+
+(def transform (fn [zipper]
+    (cond (zip/end? zipper)
+          zipper
+
+          (or (= (zip/node zipper) 'facts) (= (zip/node zipper) 'fact))
+          (-> zipper (zip/replace 'do) zip/next transform)
+          
+          (= (zip/node zipper) 'quote)
+          (->   
+            zipper
+            skip-to-rightmost-leaf
+            zip/next
+            transform
+          )
+
+          (= (zip/node zipper) 'provided)
+          (->   
+            zipper
+            (zip/replace 'fake)
+            skip-to-rightmost-leaf
+            zip/next
+            transform
+          )
+
+          (= (zip/node zipper) '=>)
+          ; note: could define the replacement node here as in Brian's soln
+          (-> 
+            zipper
+
+            ; Get rid of left node
+            zip/left
+            zip/remove
+            zip/next ; Because remove goes to the previous node,
+                     ; we get back to the main one by using next
+
+            ; Get rid of right node
+            zip/right
+            zip/remove
+
+            ; Put in our new branch
+            (zip/replace '(=>))
+            (zip/insert-child (-> zipper zip/left zip/node))
+            (zip/insert-child 'expect)
+            (zip/append-child (-> zipper zip/right zip/node))
+
+            ; Move on
+            zip/down
+            skip-to-rightmost-leaf
+            zip/next
+            transform
+          )
+
+          :else
+          (-> zipper zip/next transform)
+    )
+))
+
+(def transform-pipeline
+    (fn [form]
+        (-> form zip/seq-zip transform zip/root)
+    )
+)
+
+(def test-form 
+    '(fact
+        (first '((+ 1 2) => 3))
+        => '(+ 1 2)
+    )
+)
+(println (transform-pipeline test-form))
+
+(def test-form 
+    '(facts 
+        (+ 1 2) => 3 
+        3 => odd?)
+)
+(println (transform-pipeline test-form))
+
+(def test-form
+    '(fact
+        (function-under-test 3) => -88
+            (provided (subsidiary-function 3) => 88)
+    )
+)
+(println (transform-pipeline test-form))
