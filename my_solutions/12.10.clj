@@ -30,9 +30,13 @@
 ; my answers
 (defn znode [zipper] (:here zipper))
 
-(defn zdown [zipper] (assoc zipper
-        :here (first (:here zipper))
-        :parents (:here zipper) ; TODO - I don't think this is right
+(defn zdown [zipper] 
+    (if (empty? (:here zipper))
+        nil
+        (assoc zipper
+            :here (first (:here zipper))
+            :parents (concat [(:here zipper)] (:parents zipper))
+        )
     )
 )
 
@@ -40,8 +44,8 @@
     (if (empty? (:parents zipper))
         nil
         (assoc zipper
-            :here (:parents zipper)
-            :parents '() ; TODO
+            :here (first (:parents zipper))
+            :parents (rest (:parents zipper))
         )
     )
 )
