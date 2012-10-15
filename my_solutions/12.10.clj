@@ -28,17 +28,19 @@
 )
 
 ; my answers
-(defn znode [zipper] (:here zipper))
+(defn znode [zipper] (:here zipper)) ; Brian's solution here is nice
 
 (defn zdown [zipper] 
     (if (empty? (:here zipper))
         nil
         (assoc zipper
             :here (first (:here zipper))
-            :parents (concat [(:here zipper)] (:parents zipper))
+            :parents (concat [(:here zipper)] (:parents zipper)) 
         )
     )
 )
+; Notice Brian's zdown solution actually keeps the entire zipper, not just the node...
+; ...which means his zup is actually really simple.
 
 (defn zup [zipper] 
     (if (empty? (:parents zipper))
