@@ -15,7 +15,9 @@
 ; Exercise 1
 
 ; I'm guessing it was because filter produced a lazy sequence which singles
-; now points to.
+; now points to. [edit after reading answer: yes, but more precisely,
+; singles cached the answers it had before - which by-the-by includes the function
+; which was originally produced from inputs so its spectre lives on?]
 
 ; Exercise 2
 
