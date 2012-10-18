@@ -1,0 +1,19 @@
+Lazy sequences store the element they compute (the first);
+that is, originally they're a function which can be used to produce
+    (the first value and a function which can be used to produce 
+        (the second value and a function which can be used ... )),
+but once it's calculated its return value, *it points to that instead of the function itself*.
+
+
+The question is: in 13.5, where the values input when the lazy sequence
+'inputs-starting-now' was first computed, did those computed lazy sequences
+stick around in memory (a) by default, or (b) as some vestigial remainder because
+something hadn't finished executing yet?
+
+
+I'm guessing the former, because it's not like the thing which was executed was an
+*instance* of the function - it was the function, as loaded into memory,
+and as modified in memory by the procedure outlined in the first paragraph.
+
+
+To be clear: inputs-starting-now is being modified, but we could always make new inputs-starting-now functions by using prompt-and-read as an input to repeatedly.
