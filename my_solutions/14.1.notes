@@ -1,0 +1,16 @@
+Generic functions process different inputs differently.
+
+For example, you could make it differentiate based on the type of the input.
+
+Or you could differentiate what it does based on whether a number is odd.
+
+By contrast (though they're similar concepts), pattern matching functions
+will change how they process and what they output depending on the
+shape of the input they're given (eg a list with just a head,
+a list with a head and a tail, etc).
+
+The trick: pattern matching is implemented (at least partially) 
+using a generic function which processes data matching different
+patterns differently (ie it uses a pattern classifier fn as 
+the differentiator). (Note: the implementation *does* classify, but it doesn't
+assign types.)
