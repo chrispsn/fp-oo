@@ -17,7 +17,7 @@
   [so-far [head & tail] ] (count-sequence (inc so-far) tail))
 
 ; test
-(println (count-sequence '(:a :b :c)))
+(println (count-sequence '(:a :b :c)))  ; 3
 
 
 ; Exercise 2
@@ -26,11 +26,12 @@
 
 (defpatterned pattern-reduce 
   [function so-far [           ] ] so-far
-  [function so-far [     & tail] ] (function so-far head)
-  [function so-far [head & tail] ] (pattern-reduce function so-far tail))
+  [function so-far [single]    ] (function so-far single)
+  [function so-far [head & tail] ] (pattern-reduce function (function so-far head) tail)
+)
 
 ; test
 
 (println (pattern-reduce (fn [so-far elt] (cons elt so-far))
                             []
-                            [:a :b :c]) ; output: [:c :b :a]
+                            [:a :b :c])) ; output: [:c :b :a]
