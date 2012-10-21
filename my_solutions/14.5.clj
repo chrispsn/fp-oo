@@ -26,7 +26,7 @@
 
 (defpatterned pattern-reduce 
   [function so-far [           ] ] so-far
-  [function so-far [single]    ] (function so-far single)
+  [function so-far [   single  ] ] (function so-far single)
   [function so-far [head & tail] ] (pattern-reduce function (function so-far head) tail)
 )
 
